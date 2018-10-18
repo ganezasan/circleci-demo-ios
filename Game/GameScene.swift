@@ -22,10 +22,6 @@ class GameScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        /* Called when a touch begins */
 
-        // index error
-        let array = [2, 3, 5]
-        print(array[3])
-
         for touch in touches {
             let location = touch.location(in: self)
 
