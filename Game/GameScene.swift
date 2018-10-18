@@ -15,30 +15,34 @@ class GameScene: SKScene {
         myLabel.text = "Hello, World!";
         myLabel.fontSize = 45;
         myLabel.position = CGPoint(x:self.frame.midX, y:self.frame.midY);
-        
+
         self.addChild(myLabel)
     }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        /* Called when a touch begins */
-        
+
+        // index error
+        let array = [2, 3, 5]
+        print(array[3])
+
         for touch in touches {
             let location = touch.location(in: self)
-            
+
             let sprite = SKSpriteNode(imageNamed:"Spaceship")
-            
+
             sprite.xScale = 0.5
             sprite.yScale = 0.5
             sprite.position = location
-            
+
             let action = SKAction.rotate(byAngle: CGFloat(Double.pi), duration:1)
-            
+
             sprite.run(SKAction.repeatForever(action))
-            
+
             self.addChild(sprite)
         }
     }
-   
+
     override func update(_ currentTime: TimeInterval) {
         /* Called before each frame is rendered */
     }
