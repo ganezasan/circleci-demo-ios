@@ -6,6 +6,8 @@
 //  Copyright © 2015 CircleCI. All rights reserved.
 //
 
+import XCTest
+
 class GameUITests: XCTestCase {
 
     override func setUp() {
