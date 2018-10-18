@@ -36,3 +36,5 @@ Carthage/Build
 # Fastlane output
 fastlane/report.xml
 fastlane/test_output/
+.DS_Store
+screenshots
