@@ -38,6 +38,11 @@ class GameUITests: XCTestCase {
         snapshot("0Launch")
         let app = XCUIApplication()
 
+        let myLabel = app.staticTexts.element(boundBy: 0)
+        // Check the string displayed on the label is correct
+        XCTAssertEqual("Hello world", myLabel.label)
+        snapshot("label check")
+
         app.tap()
         snapshot("1tap")
     }
