@@ -35,16 +35,14 @@ class GameUITests: XCTestCase {
     func testExample() {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        snapshot("0Launch")
+        snapshot("0_Launch")
         let app = XCUIApplication()
 
-        let myLabel = app.staticTexts.element(boundBy: 0)
-        // Check the string displayed on the label is correct
-        XCTAssertEqual("Hello world", myLabel.label)
-        snapshot("label check")
+        // Check the string displayed on the label is existing
+        XCTAssertTrue(app.otherElements["myLabel"].exists)
 
         app.tap()
-        snapshot("1tap")
+        snapshot("1_Tap")
     }
 
 }
