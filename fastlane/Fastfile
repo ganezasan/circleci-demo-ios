@@ -14,7 +14,11 @@ platform :ios do
   desc "Ad-hoc build"
   lane :adhoc do
     match(type: "adhoc")
-    gym(export_method: "ad-hoc")
+    gym(
+      scheme: 'Game',
+      configuration: "Release",
+      export_method: "ad-hoc"
+    )
   end
 
   desc "Submit a new Beta Build to Apple TestFlight"
