@@ -1,6 +1,7 @@
 git_url("git@github.com:ganezasan/circleci-demo-ios-certificates.git")
 
 type("adhoc") # The default type, can be: appstore, adhoc, enterprise or development
+readonly("true")
 app_identifier("com.circleci.ios-game")
 username("takayuki@circleci.com")
 
