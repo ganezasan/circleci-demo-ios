@@ -11,6 +11,16 @@ platform :ios do
     snapshot
   end
 
+  desc "Development build"
+  lane :development do
+    match(type: "development")
+    gym(
+      scheme: 'Game',
+      configuration: "Release",
+      export_method: "development"
+    )
+  end
+
   desc "Ad-hoc build"
   lane :adhoc do
     match(type: "adhoc")

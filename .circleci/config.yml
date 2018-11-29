@@ -36,6 +36,26 @@ jobs:
       - store_artifacts:
           path: output/Game.ipa
 
+  development:
+    macos:
+      xcode: "9.4.1"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: null
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - run:
+          name: Set Ruby Version
+          command: echo "ruby-2.4" > .ruby-version
+      - run: bundle install && bundle update
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane development
+      - store_artifacts:
+          path: output/Game.ipa
+
   beta:
     macos:
       xcode: "10.0.0"
@@ -58,10 +78,14 @@ workflows:
   build-test-adhoc:
     jobs:
       - build-and-test
-      - adhoc:
+      - development:
           filters:
             branches:
               only: development
+      - adhoc:
+          filters:
+            branches:
+              only: staging
           requires:
             - build-and-test
       #- beta:
