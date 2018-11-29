@@ -16,8 +16,8 @@ platform :ios do
   desc "Development build"
   lane :development do
     match(
-      type: "development",
-      readonly: false
+      type: "development"
+      # readonly: false
     )
     gym(
       scheme: 'Game',
