@@ -2,7 +2,7 @@ version: 2
 jobs:
   build-and-test:
     macos:
-      xcode: "10.0.1"
+      xcode: "10.0.0"
     working_directory: /Users/distiller/project
     environment:
       FL_OUTPUT_DIR: output
@@ -38,7 +38,7 @@ jobs:
 
   run-test-suite-ios-10:
     macos:
-      xcode: "10.0.0"
+      xcode: "10.1.0"
     steps:
       - checkout
       - run:
@@ -80,7 +80,7 @@ jobs:
 
   development:
     macos:
-      xcode: "10.0.1"
+      xcode: "10.0.0"
     working_directory: /Users/distiller/project
     environment:
       FL_OUTPUT_DIR: output
