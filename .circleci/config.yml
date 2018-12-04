@@ -1,44 +1,79 @@
-version: 2
 jobs:
-  build-and-test:
+  run-test-suite-ios-11:
     macos:
-      xcode: "10.0.0"
-    working_directory: /Users/distiller/project
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: test
-    shell: /bin/bash --login -o pipefail
+      xcode: "10.1.0"
     steps:
       - checkout
-      - run: bundle install
       - run:
-          name: Fastlane
-          command: bundle exec fastlane $FASTLANE_LANE
-      - store_artifacts:
-          path: output
-      - store_test_results:
-          path: output/scan
+          name: Set Timezone
+          command: |
+            sudo systemsetup -settimezone "America/Chicago"
+      - run:
+          name: Tap for Sim utils
+          command: |
+            brew tap wix/brew
+      - run:
+          name: Install Sim utils
+          command: |
+            brew install applesimutils --HEAD
+      - run:
+          name: Boot iPhone Simulator (latest)
+          command: |
+            xcrun instruments -w "iPhone 8 (12.1) [" || sleep 30
+      - run:
+          name: Update Simulator Permissions (latest)
+          command: |
+            applesimutils --simulator "iPhone 8,OS=12.1" --bundle "simpleinout" --setPermissions "notifications=YES, location=always, contacts=YES"
+      - run:
+          name: Sleep to allow Sims to reset
+          command: |
+            sleep 30
+      - run:
+          name: disable keyboard
+          command: |
+            defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
+      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 8,OS=12.1' clean build-for-testing
+      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 8,OS=12.1' test-without-building
 
-  adhoc:
+  run-test-suite-ios-11-settings:
     macos:
-      xcode: "10.0.0"
-    working_directory: /Users/distiller/project
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: adhoc
-    shell: /bin/bash --login -o pipefail
+      xcode: "10.1.0"
     steps:
       - checkout
-      - run: bundle install
       - run:
-          name: Fastlane
-          command: bundle exec fastlane $FASTLANE_LANE
-      - store_artifacts:
-          path: output/Game.ipa
+          name: Set Timezone
+          command: |
+            sudo systemsetup -settimezone "America/Chicago"
+      - run:
+          name: Tap for Sim utils
+          command: |
+            brew tap wix/brew
+      - run:
+          name: Install Sim utils
+          command: |
+            brew install applesimutils --HEAD
+      - run:
+          name: Boot iPhone Simulator (latest)
+          command: |
+            xcrun instruments -w "iPhone 8 (12.1) [" || sleep 30
+      - run:
+          name: Update Simulator Permissions (latest)
+          command: |
+            applesimutils --simulator "iPhone 8,OS=12.1" --bundle "simpleinout" --setPermissions "notifications=YES, location=always, contacts=YES"
+      - run:
+          name: Sleep to allow Sims to reset
+          command: |
+            sleep 30
+      - run:
+          name: disable keyboard
+          command: |
+            defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
+      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 8,OS=12.1' clean build-for-testing
+      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 8,OS=12.1' test-without-building
 
   run-test-suite-ios-10:
     macos:
-      xcode: "10.1.0"
+      xcode: "10.0.0"
     steps:
       - checkout
       - run:
@@ -78,63 +113,47 @@ jobs:
       - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.3.1' clean build-for-testing
       - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.3.1' test-without-building
 
-  development:
+  run-test-suite-ipad:
     macos:
-      xcode: "10.0.0"
-    working_directory: /Users/distiller/project
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: null
-    shell: /bin/bash --login -o pipefail
+      xcode: "10.1.0"
     steps:
       - checkout
       - run:
-          name: Set Ruby Version
-          command: echo "ruby-2.4" > .ruby-version
-      - run: bundle install && bundle update
+          name: Set Timezone
+          command: |
+            sudo systemsetup -settimezone "America/Chicago"
       - run:
+          name: Tap for Sim utils
+          command: |
+            brew tap wix/brew
       - run:
-          name: Fastlane
-          command: bundle exec fastlane development
-      - store_artifacts:
-          path: output/Game.ipa
-
-  beta:
-    macos:
-      xcode: "10.0.0"
-    working_directory: /Users/distiller/project
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: beta
-    shell: /bin/bash --login -o pipefail
-    steps:
-      - checkout
-      - run: bundle install
+          name: Install Sim utils
+          command: |
+            brew install applesimutils --HEAD
       - run:
-          name: Fastlane
-          command: bundle exec fastlane $FASTLANE_LANE
-      - store_artifacts:
-          path: output/Game.ipa
+          name: Boot iPad Simulator (latest)
+          command: |
+            xcrun instruments -w "iPad Air 2 (12.1) [" || sleep 30
+      - run:
+          name: Update iPad Simulator Permissions (latest)
+          command: |
+            applesimutils --simulator "iPad Air 2,OS=12.1" --bundle "simpleinout" --setPermissions "notifications=YES, location=always, contacts=YES"
+      - run:
+          name: Sleep to allow Sims to reset
+          command: |
+            sleep 30
+      - run:
+          name: disable keyboard
+          command: |
+            defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
+      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPad Air 2,OS=12.1' clean build-for-testing
+      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPad Air 2,OS=12.1' test-without-building
 
 workflows:
   version: 2
-  build-test-adhoc:
+  run-test-suite:
     jobs:
+      - run-test-suite-ios-11
+      - run-test-suite-ipad
       - run-test-suite-ios-10
-      # - build-and-test
-      # - development:
-      #     filters:
-      #       branches:
-      #         only: development
-      # - adhoc:
-      #     filters:
-      #       branches:
-      #         only: staging
-      #     requires:
-      #       - build-and-test
-      #- beta:
-          #filters:
-            #branches:
-              #only: master
-          #requires:
-            #- build-and-test
+      - run-test-suite-ios-11-settings
