@@ -2,7 +2,7 @@ version: 2
 jobs:
   build-and-test:
     macos:
-      xcode: "10.0.0"
+      xcode: "10.0.1"
     working_directory: /Users/distiller/project
     environment:
       FL_OUTPUT_DIR: output
@@ -36,9 +36,51 @@ jobs:
       - store_artifacts:
           path: output/Game.ipa
 
+  run-test-suite-ios-10:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run:
+          name: Set Timezone
+          command: |
+            sudo systemsetup -settimezone "America/Chicago"
+      - run:
+          name: Update CLT
+          command: |
+            sudo softwareupdate -l
+            sudo softwareupdate -i "Command Line Tools (macOS High Sierra version 10.13) for Xcode-10.1"
+      - run: xcrun simctl list
+      - run:
+          name: Tap for Sim utils
+          command: |
+            brew tap wix/brew
+      - run:
+          name: Install Sim utils
+          command: |
+            brew install applesimutils --HEAD
+      - run:
+          name: Boot iPhone Simulator (iOS 10)
+          command: |
+            xcrun instruments -w "iPhone 7 (10.3.1) [" || sleep 60
+      - run:
+          name: Update Simulator Permissions (iOS 10)
+          command: |
+            applesimutils --simulator "iPhone 7,OS=10.3.1" --bundle "simpleinout" --setPermissions "notifications=YES, location=always, contacts=YES"
+      - run:
+          name: Sleep to allow Sims to reset
+          command: |
+            sleep 60
+      - run:
+          name: disable keyboard
+          command: |
+            defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
+      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.3.1' clean build-for-testing
+      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.3.1' test-without-building
+
   development:
     macos:
-      xcode: "9.4.1"
+      xcode: "10.0.1"
     working_directory: /Users/distiller/project
     environment:
       FL_OUTPUT_DIR: output
@@ -50,6 +92,7 @@ jobs:
           name: Set Ruby Version
           command: echo "ruby-2.4" > .ruby-version
       - run: bundle install && bundle update
+      - run:
       - run:
           name: Fastlane
           command: bundle exec fastlane development
@@ -77,17 +120,18 @@ workflows:
   version: 2
   build-test-adhoc:
     jobs:
-      - build-and-test
-      - development:
-          filters:
-            branches:
-              only: development
-      - adhoc:
-          filters:
-            branches:
-              only: staging
-          requires:
-            - build-and-test
+      - run-test-suite-ios-10
+      # - build-and-test
+      # - development:
+      #     filters:
+      #       branches:
+      #         only: development
+      # - adhoc:
+      #     filters:
+      #       branches:
+      #         only: staging
+      #     requires:
+      #       - build-and-test
       #- beta:
           #filters:
             #branches:
