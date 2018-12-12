@@ -1,159 +1,28 @@
 jobs:
-  run-test-suite-ios-11:
-    macos:
-      xcode: "10.1.0"
+  ignore-test:
+    docker:
+      - image: circleci/node:10
     steps:
-      - checkout
-      - run:
-          name: Set Timezone
-          command: |
-            sudo systemsetup -settimezone "America/Chicago"
-      - run:
-          name: Tap for Sim utils
-          command: |
-            brew tap wix/brew
-      - run:
-          name: Install Sim utils
-          command: |
-            brew install applesimutils --HEAD
-      - run:
-          name: Boot iPhone Simulator (latest)
-          command: |
-            xcrun instruments -w "iPhone 8 (12.1) [" || sleep 30
-      - run:
-          name: Update Simulator Permissions (latest)
-          command: |
-            applesimutils --simulator "iPhone 8,OS=12.1" --bundle "simpleinout" --setPermissions "notifications=YES, location=always, contacts=YES"
-      - run:
-          name: Sleep to allow Sims to reset
-          command: |
-            sleep 30
-      - run:
-          name: disable keyboard
-          command: |
-            defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
-      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 8,OS=12.1' clean build-for-testing
-      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 8,OS=12.1' test-without-building
-
-  run-test-suite-ios-11-settings:
-    macos:
-      xcode: "10.1.0"
+      - run: echo "filter ignore"
+  only-test:
+    docker:
+      - image: circleci/node:10
     steps:
-      - checkout
-      - run:
-          name: Set Timezone
-          command: |
-            sudo systemsetup -settimezone "America/Chicago"
-      - run:
-          name: Tap for Sim utils
-          command: |
-            brew tap wix/brew
-      - run:
-          name: Install Sim utils
-          command: |
-            brew install applesimutils --HEAD
-      - run:
-          name: Boot iPhone Simulator (latest)
-          command: |
-            xcrun instruments -w "iPhone 8 (12.1) [" || sleep 30
-      - run:
-          name: Update Simulator Permissions (latest)
-          command: |
-            applesimutils --simulator "iPhone 8,OS=12.1" --bundle "simpleinout" --setPermissions "notifications=YES, location=always, contacts=YES"
-      - run:
-          name: Sleep to allow Sims to reset
-          command: |
-            sleep 30
-      - run:
-          name: disable keyboard
-          command: |
-            defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
-      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 8,OS=12.1' clean build-for-testing
-      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 8,OS=12.1' test-without-building
-
-  run-test-suite-ios-10:
-    macos:
-      xcode: "10.0.0"
-    steps:
-      - checkout
-      - run:
-          name: Set Timezone
-          command: |
-            sudo systemsetup -settimezone "America/Chicago"
-      - run:
-          name: Update CLT
-          command: |
-            sudo softwareupdate -l
-            sudo softwareupdate -i "Command Line Tools (macOS High Sierra version 10.13) for Xcode-10.1"
-      - run: xcrun simctl list
-      - run:
-          name: Tap for Sim utils
-          command: |
-            brew tap wix/brew
-      - run:
-          name: Install Sim utils
-          command: |
-            brew install applesimutils --HEAD
-      - run:
-          name: Boot iPhone Simulator (iOS 10)
-          command: |
-            xcrun instruments -w "iPhone 7 (10.3.1) [" || sleep 60
-      - run:
-          name: Update Simulator Permissions (iOS 10)
-          command: |
-            applesimutils --simulator "iPhone 7,OS=10.3.1" --bundle "simpleinout" --setPermissions "notifications=YES, location=always, contacts=YES"
-      - run:
-          name: Sleep to allow Sims to reset
-          command: |
-            sleep 60
-      - run:
-          name: disable keyboard
-          command: |
-            defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
-      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.3.1' clean build-for-testing
-      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.3.1' test-without-building
-
-  run-test-suite-ipad:
-    macos:
-      xcode: "10.1.0"
-    steps:
-      - checkout
-      - run:
-          name: Set Timezone
-          command: |
-            sudo systemsetup -settimezone "America/Chicago"
-      - run:
-          name: Tap for Sim utils
-          command: |
-            brew tap wix/brew
-      - run:
-          name: Install Sim utils
-          command: |
-            brew install applesimutils --HEAD
-      - run:
-          name: Boot iPad Simulator (latest)
-          command: |
-            xcrun instruments -w "iPad Air 2 (12.1) [" || sleep 30
-      - run:
-          name: Update iPad Simulator Permissions (latest)
-          command: |
-            applesimutils --simulator "iPad Air 2,OS=12.1" --bundle "simpleinout" --setPermissions "notifications=YES, location=always, contacts=YES"
-      - run:
-          name: Sleep to allow Sims to reset
-          command: |
-            sleep 30
-      - run:
-          name: disable keyboard
-          command: |
-            defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
-      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPad Air 2,OS=12.1' clean build-for-testing
-      - run: set -o pipefail && xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_IDENTITY= PROVISIONING_PROFILE= GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES -scheme "Game" -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES VALID_ARCHS=x86_64 -destination 'platform=iOS Simulator,name=iPad Air 2,OS=12.1' test-without-building
+      - run: echo "filter only"
 
 workflows:
   version: 2
-  run-test-suite:
+  pr-test:
     jobs:
-      - run-test-suite-ios-11
-      - run-test-suite-ipad
-      - run-test-suite-ios-10
-      - run-test-suite-ios-11-settings
+      - ignore-test:
+          filters:
+            branches:
+              ignore:
+                - /feature\/.*/
+  build:
+    jobs:
+      - only-test:
+          filters:
+            branches:
+              only:
+                - /feature\/.*/
