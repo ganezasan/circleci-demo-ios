@@ -11,7 +11,10 @@ platform :ios do
   lane :test do
     scan(
       xcargs: "-parallel-testing-enabled YES -parallel-testing-worker-count 3",
-      include_simulator_logs: false
+      include_simulator_logs: false,
+      result_bundle: true,
+      output_style: "raw",
+      devices: ["iPhone SE (11.2)"]
     )
     snapshot
   end
