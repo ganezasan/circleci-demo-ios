@@ -1,28 +1,96 @@
+version: 2
 jobs:
-  ignore-test:
-    docker:
-      - image: circleci/node:10
+  build-and-test:
+    macos:
+      xcode: "10.0.0"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: test
+    shell: /bin/bash --login -o pipefail
     steps:
-      - run: echo "filter ignore"
-  only-test:
-    docker:
-      - image: circleci/node:10
+      - checkout
+      - run: bundle install
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output
+      - store_test_results:
+          path: output/scan
+
+  adhoc:
+    macos:
+      xcode: "10.0.0"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: adhoc
+    shell: /bin/bash --login -o pipefail
     steps:
-      - run: echo "filter only"
+      - checkout
+      - run: bundle install
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output/Game.ipa
+
+  development:
+    macos:
+      xcode: "9.4.1"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: null
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - run:
+          name: Set Ruby Version
+          command: echo "ruby-2.4" > .ruby-version
+      - run: bundle install && bundle update
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane development
+      - store_artifacts:
+          path: output/Game.ipa
+
+  beta:
+    macos:
+      xcode: "10.0.0"
+    working_directory: /Users/distiller/project
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: beta
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Fastlane
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output/Game.ipa
 
 workflows:
   version: 2
-  pr-test:
+  build-test-adhoc:
     jobs:
-      - ignore-test:
+      - build-and-test
+      - development:
           filters:
             branches:
-              ignore:
-                - /feature\/.*/
-  build:
-    jobs:
-      - only-test:
+              only: development
+      - adhoc:
           filters:
             branches:
-              only:
-                - /feature\/.*/
+              only: staging
+          requires:
+            - build-and-test
+      #- beta:
+          #filters:
+            #branches:
+              #only: master
+          #requires:
+            #- build-and-test
