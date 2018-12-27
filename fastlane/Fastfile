@@ -10,7 +10,7 @@ platform :ios do
   desc "Runs all the tests"
   lane :test do
     scan(
-      xcargs: "-parallel-testing-enabled YES -parallel-testing-worker-count 2",
+      xcargs: "-parallel-testing-enabled YES -parallel-testing-worker-count 3",
       include_simulator_logs: false
     )
     snapshot
