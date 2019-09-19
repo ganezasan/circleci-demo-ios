@@ -7,7 +7,9 @@ platform :ios do
 
   desc "Runs all the tests"
   lane :test do
-    scan
+    scan(
+      include_simulator_logs: true
+    )
     snapshot
   end
 
