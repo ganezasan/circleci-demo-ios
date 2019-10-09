@@ -1,4 +1,5 @@
 default_platform :ios
+MY_APP_ID = "com.circleci.ios-game"
 
 platform :ios do
   before_all do
@@ -26,10 +27,20 @@ platform :ios do
   desc "Ad-hoc build"
   lane :adhoc do
     match(
+      app_identifier: MY_APP_ID,
       type: "adhoc",
-      git_url: 'git@github.com:ganezasan/circleci-demo-ios-certificates.git'
+      git_url: 'git@github.com:ganezasan/circleci-demo-ios-certificates.git',
+      readonly: true
     )
-    gym(export_method: "ad-hoc")
+    gym(
+      export_method: "ad-hoc",
+      export_options: {
+        method: "ad-hoc",
+        provisioningProfiles: {
+          MY_APP_ID => "match AdHoc com.circleci.ios-game"
+        }
+      }
+    )
   end
 
   desc "Submit a new Beta Build to Apple TestFlight"
