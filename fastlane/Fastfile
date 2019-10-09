@@ -25,7 +25,10 @@ platform :ios do
 
   desc "Ad-hoc build"
   lane :adhoc do
-    match(type: "adhoc")
+    match(
+      type: "adhoc",
+      git_url: 'git@github.com:ganezasan/circleci-demo-ios-certificates.git'
+    )
     gym(export_method: "ad-hoc")
   end
 
