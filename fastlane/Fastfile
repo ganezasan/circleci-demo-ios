@@ -37,11 +37,12 @@ platform :ios do
       export_options: {
         method: "ad-hoc",
         provisioningProfiles: {
-          MY_APP_ID => "match AdHoc com.circleci.ios-game"
+          MY_APP_ID => "match AdHoc com.circleci.ios-game_adhoc"
         }
       }
     )
   end
+
 
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
