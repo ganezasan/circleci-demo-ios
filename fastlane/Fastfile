@@ -37,7 +37,7 @@ platform :ios do
       export_options: {
         method: "ad-hoc",
         provisioningProfiles: {
-          MY_APP_ID => "match AdHoc com.circleci.ios-game_adhoc"
+          MY_APP_ID => "match AdHoc com.circleci.ios-game"
         }
       }
     )
