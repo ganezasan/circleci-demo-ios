@@ -25,13 +25,14 @@ platform :ios do
 
   desc "Ad-hoc build"
   lane :adhoc do
-    sh "security find-identity -v -p codesigning"
-    sh "security list-keychains"
-
     match(
       type: "adhoc",
       readonly: true
     )
+
+    sh "security find-identity -p codesigning"
+    sh "security find-identity -p codesigning fastlane_tmp_keychain"
+    sh "security list-keychains"
 
     gym(
       export_method: "ad-hoc",
