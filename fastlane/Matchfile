@@ -1,2 +1,2 @@
+app_identifier("com.circleci.ios-game")
 git_url("git@github.com:ganezasan/circleci-demo-ios-certificates.git")
-
