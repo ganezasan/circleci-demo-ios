@@ -25,6 +25,7 @@ platform :ios do
 
   desc "Ad-hoc build"
   lane :adhoc do
+    disable_automatic_code_signing
     match(
       type: "adhoc",
       readonly: true
