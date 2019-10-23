@@ -103,15 +103,15 @@ workflows:
   version: 2
   build-test-adhoc:
     jobs:
-      - test:
-          fastlane_lane: test
+      # - test:
+      #     fastlane_lane: test
       - generate-ipa:
           fastlane_lane: adhoc
-          filters:
-            branches:
-              only: development
-          requires:
-            - test
+          # filters:
+          #   branches:
+          #     only: development
+          # requires:
+          #   - test
       #- beta:
           #filters:
             #branches:
