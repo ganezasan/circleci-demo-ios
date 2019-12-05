@@ -10,7 +10,8 @@ platform :ios do
     scan(
       include_simulator_logs: false,
       code_coverage: true,
-      clean: true
+      clean: true,
+      device: 'iPhone 11 Pro'
     )
 
     slather(
