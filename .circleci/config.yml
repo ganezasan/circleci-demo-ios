@@ -22,6 +22,11 @@ jobs:
       - run:
           name: Fastlane
           command: sudo bundle exec fastlane hello
+      - run:
+          name: Fastlane
+          command: |
+            sudo env
+            env
 
 workflows:
   version: 2
