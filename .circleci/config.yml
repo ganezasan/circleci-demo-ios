@@ -21,7 +21,7 @@ jobs:
             - vendor/bundle
       - run:
           name: Fastlane
-          command: bundle exec fastlane hello
+          command: sudo bundle exec fastlane hello
 
 workflows:
   version: 2
