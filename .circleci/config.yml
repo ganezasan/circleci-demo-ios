@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build-and-test:
+  echo:
     macos:
       xcode: "10.0.0"
     working_directory: /Users/distiller/project
@@ -13,84 +13,10 @@ jobs:
       - run: bundle install
       - run:
           name: Fastlane
-          command: bundle exec fastlane $FASTLANE_LANE
-      - store_artifacts:
-          path: output
-      - store_test_results:
-          path: output/scan
-
-  adhoc:
-    macos:
-      xcode: "10.0.0"
-    working_directory: /Users/distiller/project
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: adhoc
-    shell: /bin/bash --login -o pipefail
-    steps:
-      - checkout
-      - run: bundle install
-      - run:
-          name: Fastlane
-          command: bundle exec fastlane $FASTLANE_LANE
-      - store_artifacts:
-          path: output/Game.ipa
-
-  development:
-    macos:
-      xcode: "9.4.1"
-    working_directory: /Users/distiller/project
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: null
-    shell: /bin/bash --login -o pipefail
-    steps:
-      - checkout
-      - run:
-          name: Set Ruby Version
-          command: echo "ruby-2.4" > .ruby-version
-      - run: bundle install && bundle update
-      - run:
-          name: Fastlane
-          command: bundle exec fastlane development
-      - store_artifacts:
-          path: output/Game.ipa
-
-  beta:
-    macos:
-      xcode: "10.0.0"
-    working_directory: /Users/distiller/project
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: beta
-    shell: /bin/bash --login -o pipefail
-    steps:
-      - checkout
-      - run: bundle install
-      - run:
-          name: Fastlane
-          command: bundle exec fastlane $FASTLANE_LANE
-      - store_artifacts:
-          path: output/Game.ipa
+          command: bundle exec fastlane hello
 
 workflows:
   version: 2
   build-test-adhoc:
     jobs:
-      - build-and-test
-      - development:
-          filters:
-            branches:
-              only: development
-      - adhoc:
-          filters:
-            branches:
-              only: staging
-          requires:
-            - build-and-test
-      #- beta:
-          #filters:
-            #branches:
-              #only: master
-          #requires:
-            #- build-and-test
+      - echo
