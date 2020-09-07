@@ -21,9 +21,6 @@ jobs:
             - vendor/bundle
       - run:
           name: Fastlane
-          command: sudo bundle exec fastlane hello
-      - run:
-          name: Fastlane
           command: |
             sudo env
             env
