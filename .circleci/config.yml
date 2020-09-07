@@ -23,6 +23,9 @@ jobs:
           name: Fastlane
           command: |
             sudo env
+      - run:
+          name: Fastlane
+          command: |
             env
 
 workflows:
