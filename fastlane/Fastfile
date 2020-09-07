@@ -8,8 +8,15 @@ platform :ios do
 #  end
   desc "Hello"
   lane :hello do
-    puts ENV["CIRCLE_BRANCH"]
+    MY_APP_ID = "com.melscience.melchemistry"
+    MY_PROFILE = "match Development com.melscience.melchemistry"
+    MY_TEAM = "7M23Z4PMXZ"
     puts "CIRCLE_BRANCH |" + ENV['CIRCLE_BRANCH'] + "|"
+    puts "ENV |" + ENV['MATCH_PASSWORD'] + "|"
+
+    
+    branch = ENV['CIRCLE_BRANCH']
+    commit = last_git_commit[:message]
   end
 
 
