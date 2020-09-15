@@ -20,13 +20,14 @@ jobs:
           paths:
             - vendor/bundle
       - run:
-          name: Fastlane
+          name: pre-start simurator
           command: |
-            sudo env
+            udid=$(xcrun simctl list --json | jq '.devices["com.apple.CoreSimulator.SimRuntime.iOS-13-3"][] | select(.name == "iPhone 11") | .udid')
+            xcrun simctl boot $udid
       - run:
           name: Fastlane
           command: |
-            env
+            xcrun simctl list --json | jq '.devices["com.apple.CoreSimulator.SimRuntime.iOS-13-3"][] | select(.name == "iPhone 11")
 
 workflows:
   version: 2
