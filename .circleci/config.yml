@@ -25,9 +25,10 @@ jobs:
             udid=$(xcrun simctl list --json | jq -r '.devices["com.apple.CoreSimulator.SimRuntime.iOS-13-3"][] | select(.name == "iPhone 11") | .udid')
             xcrun simctl boot $udid
       - run:
-          name: check simurator booted
+          name: extend watchdog timeouts
           command: |
-            xcrun simctl list --json | jq '.devices["com.apple.CoreSimulator.SimRuntime.iOS-13-3"][] | select(.name == "iPhone 11")'
+            device=$(xcrun simctl list --json | jq -r '.devices["com.apple.CoreSimulator.SimRuntime.iOS-13-3"][] | select(.name == "iPhone 11").udid')
+            xcrun simctl spawn $device defaults write com.apple.springboard FBLaunchWatchdogScale 2
       - run:
           name: Pre Build
           command: |
