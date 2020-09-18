@@ -25,10 +25,22 @@ jobs:
             udid=$(xcrun simctl list --json | jq -r '.devices["com.apple.CoreSimulator.SimRuntime.iOS-13-3"][] | select(.name == "iPhone 11") | .udid')
             xcrun simctl boot $udid
       - run:
-          name: Fastlane
+          name: check simurator booted
           command: |
             xcrun simctl list --json | jq '.devices["com.apple.CoreSimulator.SimRuntime.iOS-13-3"][] | select(.name == "iPhone 11")'
-
+      - run:
+          name: Pre Build
+          command: |
+            bundle exec fastlane pre_build_app
+      - run:
+          name: install App to the booted simurator
+          command: |
+            xcrun simctl install booted simulator_build/Build/Products/Debug-iphonesimulator/Game.app
+      - run:
+          name: take snapshot
+          command: |
+            xcrun simctl launch booted com.circleci.ios-game
+            xcrun simctl io booted screenshot screen.png
 workflows:
   version: 2
   build-test-adhoc:

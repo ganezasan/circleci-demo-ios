@@ -6,19 +6,17 @@ platform :ios do
 #  before_all do
 #    setup_circle_ci
 #  end
-  desc "Hello"
-  lane :hello do
-    MY_APP_ID = "com.melscience.melchemistry"
-    MY_PROFILE = "match Development com.melscience.melchemistry"
-    MY_TEAM = "7M23Z4PMXZ"
-    puts "CIRCLE_BRANCH |" + ENV['CIRCLE_BRANCH'] + "|"
-    puts "ENV |" + ENV['MATCH_PASSWORD'] + "|"
-
-    
-    branch = ENV['CIRCLE_BRANCH']
-    commit = last_git_commit[:message]
+  desc "pre build"
+  lane :pre_build_app do
+     gym(
+      scheme: 'Game',
+      skip_package_ipa: true,
+      skip_archive: true,
+      destination: "platform=iOS Simulator,name=iPhone 11,OS=13.3",
+      configuration: "Debug",
+      derived_data_path: "simulator_build"
+     )
   end
-
 
   desc "Runs all the tests"
   lane :test do
